@@ -1,0 +1,251 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📝 Task List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background: linear-gradient(to right, #83a4d4, #b6fbff);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #4a90e2;
+            margin-bottom: 10px;
+            animation: zoomIn 0.5s ease-in-out;
+        }
+
+        h1::after {
+            content: " ✍️ 📝";
+            display: inline-block;
+            animation: bounce 1.2s infinite alternate;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-input, input[type="submit"] {
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 8px;
+            border: 2px solid #4a90e2;
+            width: 80%;
+            outline: none;
+            text-align: center;
+        }
+
+        input[type="submit"] {
+            background-color: #4a90e2;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #357ABD;
+        }
+
+        .task-list {
+            list-style: none;
+            margin-top: 20px;
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .task {
+            background-color: #f1f1f1;
+            padding: 10px 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.4s ease;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .task-actions a,
+        .task-actions button {
+            background: none;
+            border: none;
+            color: #4a90e2;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .task-actions a:hover,
+        .task-actions button:hover {
+            transform: scale(1.2);
+            color: #357ABD;
+        }
+
+        .task button[type="submit"] {
+            color: #ff4d4d;
+        }
+
+        /* Animations */
+        @keyframes bounce {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes zoomIn {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Custom Scrollbar */
+        .task-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .task-list::-webkit-scrollbar-thumb {
+            background: #4a90e2;
+            border-radius: 10px;
+        }
+
+        /* Styled Login, Signup, and Logout Buttons */
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .auth-buttons a {
+            padding: 10px 20px;
+            font-size: 1em;
+            color: white;
+            background-color: #4a90e2;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .auth-buttons a:hover {
+            background-color: #357ABD;
+            transform: scale(1.1);
+        }
+
+        .auth-buttons a.logout {
+            background-color: #ff4d4d;
+        }
+
+        .auth-buttons a.logout:hover {
+            background-color: #e03e3e;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Task List</h1>
+        
+        <!-- Create Task Form -->
+        <form method="POST" action="/">
+            {% csrf_token %}
+            {{ form.title }}
+            <input type="submit" value="Create Task">
+        </form>
+
+        <!-- Auth Buttons: Show Login/Signup if not logged in, Logout if logged in -->
+        <div class="auth-buttons">
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'logout' %}" title="logout" class="logout">Logout</a>
+            {% else %}
+                <a href="{% url 'signup' %}" title="signup">Signup</a>
+                <a href="{% url 'login' %}" title="login">Login</a>
+            {% endif %}
+        </div>
+    
+        <!-- Task List -->
+        <ul class="task-list">
+            {% for task in tasks %}
+                <li class="task">
+                    <span>{{ task }}</span>
+                    
+                    <!-- Show edit and delete options only if user is logged in -->
+                    {% if request.user.is_authenticated %}
+                    
+                        <div class="task-actions">
+                            <a href="{% url 'update_task' task.id %}" title="Update">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            
+                            <!-- Delete Task Form -->
+                            <form action="{% url 'delete_task' task.id %}" method="POST" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" title="Delete">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </div>
+                        
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+</body>
+</html>
