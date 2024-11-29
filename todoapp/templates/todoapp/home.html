@@ -7,7 +7,7 @@
     <title>📝 Task List</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Basic Reset */
+      
         * {
             margin: 0;
             padding: 0;
@@ -121,7 +121,7 @@
             color: #ff4d4d;
         }
 
-        /* Animations */
+      
         @keyframes bounce {
             from {
                 transform: translateY(0);
@@ -153,7 +153,7 @@
             }
         }
 
-        /* Custom Scrollbar */
+   
         .task-list::-webkit-scrollbar {
             width: 8px;
         }
@@ -163,7 +163,7 @@
             border-radius: 10px;
         }
 
-        /* Styled Login, Signup, and Logout Buttons */
+      
         .auth-buttons {
             display: flex;
             gap: 15px;
@@ -201,14 +201,14 @@
     <div class="container">
         <h1>Task List</h1>
         
-        <!-- Create Task Form -->
+       
         <form method="POST" action="/">
             {% csrf_token %}
             {{ form.title }}
             <input type="submit" value="Create Task">
         </form>
 
-        <!-- Auth Buttons: Show Login/Signup if not logged in, Logout if logged in -->
+       
         <div class="auth-buttons">
             {% if request.user.is_authenticated %}
                 <a href="{% url 'logout' %}" title="logout" class="logout">Logout</a>
@@ -218,13 +218,13 @@
             {% endif %}
         </div>
     
-        <!-- Task List -->
+       
         <ul class="task-list">
             {% for task in tasks %}
                 <li class="task">
                     <span>{{ task }}</span>
                     
-                    <!-- Show edit and delete options only if user is logged in -->
+                    
                     {% if request.user.is_authenticated %}
                     
                         <div class="task-actions">
