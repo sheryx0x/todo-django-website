@@ -232,7 +232,7 @@
                                 <i class="fas fa-edit"></i>
                             </a>
                             
-                            <!-- Delete Task Form -->
+                    
                             <form action="{% url 'delete_task' task.id %}" method="POST" style="display:inline;">
                                 {% csrf_token %}
                                 <button type="submit" title="Delete">

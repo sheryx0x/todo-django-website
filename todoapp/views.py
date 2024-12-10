@@ -8,18 +8,18 @@ from django.contrib.auth import logout as auth_logout
 
 
 def home(request):
-    # Filter tasks by the logged-in user
+   
     if request.user.is_authenticated:
         tasks = Task.objects.filter(user=request.user)
     else:
-        tasks = []  # or redirect to login if needed
+        tasks = []  
 
     form = TaskForm()
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():
             task = form.save(commit=False)
-            task.user = request.user  # Assign the current user to the task
+            task.user = request.user 
             task.save()
             return redirect('/')
 
@@ -45,7 +45,7 @@ def delete_task(request, pk):
     task = get_object_or_404(Task, id=pk)
     if request.method == 'POST':
         task.delete()
-        return redirect('home')  # Ensure you have a URL pattern for 'home' 
+        return redirect('home')   
 
     return redirect('home')
 
